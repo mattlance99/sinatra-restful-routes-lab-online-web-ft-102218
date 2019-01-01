@@ -7,7 +7,33 @@ require 'pry'
   end
   
   get "/" do 
-    erb :new
+    erb :welcome
+  end
+  
+  post '/project/login' do
+    @user = User.find_by(username: params["username"], password: params["password"])
+    binding.pry
+    if @user
+     session[:user_id] = @user.id
+      redirect '/account'
+    else
+          "Hello World error"
+    end
+
+  end
+
+  get '/account' do
+    @current_user = User.find_by_id(session[:user_id])
+    if @current_user
+      erb :account
+    else
+      erb :error
+    end
+  end
+
+  get '/logout' do
+    session.clear
+    redirect to '/'
   end
   
   get '/recipes' do
